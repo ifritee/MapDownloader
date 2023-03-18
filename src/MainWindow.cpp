@@ -82,7 +82,7 @@ void MainWindow::download()
   //1. dirs formation
   QString tileUrl = "";
   if (ui->server_cb->currentIndex() == 0) {
-    tileUrl = "https://tile.thunderforest.com/atlas/%1/%2/%3.png?apikey=" + ui->key_le->text();//f64a7c52ebf247a096324391d5f80c18";
+    tileUrl = "https://tile.thunderforest.com/atlas/%1/%2/%3.png?apikey=" + ui->key_le->text();
   } else if (ui->server_cb->currentIndex() == 1) {
     tileUrl = "https://tile.openstreetmap.org/%1/%2/%3.png";
   } else if (ui->server_cb->currentIndex() == 2) {

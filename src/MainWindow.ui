@@ -32,7 +32,7 @@
       <item row="1" column="1">
        <widget class="QLineEdit" name="key_le">
         <property name="text">
-         <string>f64a7c52ebf247a096324391d5f80c18</string>
+         <string/>
         </property>
        </widget>
       </item>
