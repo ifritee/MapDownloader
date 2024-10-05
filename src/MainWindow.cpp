@@ -89,6 +89,10 @@ void MainWindow::download()
     tileUrl = "https://tile.opentopomap.org/%1/%2/%3.png";
   } else if (ui->server_cb->currentIndex() == 3) {
     tileUrl = "http://mt0.google.com/vt/lyrs=m&hl=ru&x=%2&y=%3&z=%1&s=Ga";
+  } else if (ui->server_cb->currentIndex() == 4) {
+     tileUrl = "https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x=%2&y=%3&z=%1&scale=1&lang=ru_RU";
+  } else if (ui->server_cb->currentIndex() == 5) {
+     tileUrl = "https://core-renderer-tiles.maps.yandex.net/tiles?l=map&theme=dark&x=%2&y=%3&z=%1&scale=1&lang=ru_RU";
   }
   m_tilesQue.clear();
   QDir().mkpath("map_cache");
