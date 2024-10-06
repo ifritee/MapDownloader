@@ -5,9 +5,11 @@
 #include <QTimer>
 #include <QDebug>
 #include <cmath>
+#include <climits>
 
 #include "ui_MainWindow.h"
 #include "FileDownloader.h"
+#include "UTileCalculate.h"
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
@@ -79,6 +81,9 @@ void MainWindow::download()
     m_tilesQue.clear();
     return;
   }
+  // 0. begin and end tiles
+  int xBegin = 0, yBegin = 0, xEnd = INT_MAX, yEnd = INT_MAX;
+  UTileCalculate tileCalc;
   //1. dirs formation
   QString tileUrl = "";
   if (ui->server_cb->currentIndex() == 0) {
@@ -91,25 +96,40 @@ void MainWindow::download()
     tileUrl = "http://mt0.google.com/vt/lyrs=m&hl=ru&x=%2&y=%3&z=%1&s=Ga";
   } else if (ui->server_cb->currentIndex() == 4) {
      tileUrl = "https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x=%2&y=%3&z=%1&scale=1&lang=ru_RU";
+     tileCalc.setProjection(UTileCalculate::P_4326);
   } else if (ui->server_cb->currentIndex() == 5) {
      tileUrl = "https://core-renderer-tiles.maps.yandex.net/tiles?l=map&theme=dark&x=%2&y=%3&z=%1&scale=1&lang=ru_RU";
+     tileCalc.setProjection(UTileCalculate::P_4326);
   }
+  // 3. Calculate tiles
   m_tilesQue.clear();
   QDir().mkpath("map_cache");
   for(auto * button : m_zoomButtons.buttons()) {
     if (button->isChecked()) { // is checked only
       int z = m_zoomButtons.id(button);
+      if (!ui->latBegin_le->text().isEmpty() && !ui->lonBegin_le->text().isEmpty()) {
+        auto point = tileCalc.calculate(z, ui->latBegin_le->text().toDouble(), ui->lonBegin_le->text().toDouble());
+        xBegin = point.first; yBegin = point.second;
+      }
+      if (!ui->latEnd_le->text().isEmpty() && !ui->lonEnd_le->text().isEmpty()) {
+        auto point = tileCalc.calculate(z, ui->latEnd_le->text().toDouble(), ui->lonEnd_le->text().toDouble());
+        xEnd = point.first; yEnd = point.second;
+      }
       QDir().mkpath("map_cache/" + QString::number(z));
       int qty = std::pow(2, z);
       for (int x = 0; x < qty; ++x) {
-        QDir().mkpath("map_cache/" + QString::number(z) + "/" + QString::number(x));
-        for (int y = 0; y < qty; ++y) {
-          QString url = tileUrl.arg(z).arg(x).arg(y);
-          QString fileName = QString("map_cache/%1/%2/%3.png").arg(z).arg(x).arg(y);
-          if (QFile::exists(fileName)) {
-            continue;
+        if (x >= xBegin && x <= xEnd) {
+          QDir().mkpath("map_cache/" + QString::number(z) + "/" + QString::number(x));
+          for (int y = 0; y < qty; ++y) {
+            QString url = tileUrl.arg(z).arg(x).arg(y);
+            QString fileName = QString("map_cache/%1/%2/%3.png").arg(z).arg(x).arg(y);
+            if (QFile::exists(fileName)) {
+              continue;
+            }
+            if (y >= yBegin && y <= yEnd) {
+              m_tilesQue.push_back(QPair<QString, QString>(url, fileName));
+            }
           }
-          m_tilesQue.push_back(QPair<QString, QString>(url, fileName));
         }
       }
     }

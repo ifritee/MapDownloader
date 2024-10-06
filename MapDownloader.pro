@@ -11,13 +11,15 @@ CONFIG += c++11
 SOURCES += \
     src/FileDownloader.cpp \
     src/UDownloadProcess.cpp \
+    src/UTileCalculate.cpp \
     src/main.cpp \
     src/MainWindow.cpp
 
 HEADERS += \
     src/FileDownloader.h \
     src/MainWindow.h \
-    src/UDownloadProcess.h
+    src/UDownloadProcess.h \
+    src/UTileCalculate.h
 
 FORMS += \
     src/MainWindow.ui
