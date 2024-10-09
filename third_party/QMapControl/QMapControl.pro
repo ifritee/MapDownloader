@@ -26,6 +26,8 @@ DEFINES += QMAPCONTROL_LIBRARY      \
     # @todo remove once MSVC supports standards-based variadic templates.
     _VARIADIC_MAX=6
 
+# Target install directory.
+DESTDIR = lib
 
 # Add header files.
 HEADERS +=                                      \
@@ -126,3 +128,5 @@ headers.files = $${HEADERS}
 target.path = $${PREFIX}/lib
 # Install headers and target.
 INSTALLS += target headers
+
+QMAKE_POST_LINK += cp -rf lib/ $${PWD}/../../

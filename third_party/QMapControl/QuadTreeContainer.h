@@ -34,6 +34,7 @@
 // Local includes.
 #include "qmapcontrol_global.h"
 #include "Point.h"
+#include "GeometryPoint.h"
 
 /*!
  * @author Chris Stylianou <chris5287@gmail.com>
@@ -83,12 +84,14 @@ namespace qmapcontrol
                 // Check whether any of our points are contained in the range.
                 for(const auto& point : m_points)
                 {
-                    // Is the point contained by the query range.
-                    if(range_coord.rawRect().contains(point.first.rawPoint()))
-                    {
-                        // Add to the return points.
-                        return_points.push_back(point.second);
-                    }
+                  // Is the point contained by the query range.
+                  QPointF currentPoint = point.first.rawPoint();
+                  GeometryPoint * thisPoint = dynamic_cast<GeometryPoint *>(point.second.get());
+                  if (thisPoint) currentPoint = thisPoint->coord().rawPoint();
+                  if(range_coord.rawRect().contains(currentPoint)) {
+                      // Add to the return points.
+                      return_points.push_back(point.second);
+                  }
                 }
 
                 // Do we have any child quad tree nodes?
