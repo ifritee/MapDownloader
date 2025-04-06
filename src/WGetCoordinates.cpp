@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <QVBoxLayout>
+#include <QLayout>
 
 #include "QMapControl/MapAdapterOSM.h"
 #include "QMapControl/QMapControl.h"
@@ -15,7 +16,11 @@ WGetCoordinates::WGetCoordinates(QWidget *parent)
 {
   setLayout(new QVBoxLayout);
   layout()->addWidget(_MapControl_po);
+#if QT_VERSION < 0x060000
   layout()->setMargin(0);
+#else
+  layout()->setContentsMargins(0, 0, 0, 0);
+#endif
 
   _MapControl_po->enableZoomControls(true, false); // Включить управление увеличением
   std::shared_ptr<MapAdapter> map_adapter(std::make_shared<MapAdapterOSM>());
